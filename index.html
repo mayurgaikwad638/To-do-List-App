@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <script src="javascript.js"></script>
+    <script src="https://kit.fontawesome.com/c744062f75.js" crossorigin="anonymous"></script>
+    
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100%;
+            width: 100%;
+            background-color: rgb(64, 10, 105);
+            box-sizing: border-box;
+            
+        }
+
+        h1 {
+            text-align: center;
+            margin: 1rem;
+        }
+
+        .title {
+            color: rgba(190, 74, 36, 0.852);
+            font-size: 100px;
+            font-weight: 500;
+        }
+
+        .inputdiv {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input {
+            border: none;
+            border-radius: 5px;
+            height: 40px;
+            width: 250px;
+            padding: 0.5rem 1rem;
+            margin: 0.40rem;
+            font-size: 1.15rem;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .add-btn {
+            height: 40px;
+            width: 40px;
+            padding: 0px;
+            margin: 0.40rem;
+            cursor: pointer;
+            font-size: 20px ;
+            font-weight: 500 ;
+            border: none;
+            border-radius: 8px;
+            background-color: rgba(190, 74, 36, 0.852);
+            color: white;
+        }
+
+        .add-btn:hover {
+            background-color: red;
+            
+
+        }
+
+        #save-btn {
+            
+            padding: 5px;
+            height: 35px;
+            width: 90px;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 400;
+            background-color: green;
+            color: white;
+            cursor: pointer;
+            display: none;
+
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 2rem;
+        }
+
+        #table {
+            width: 40%;
+            
+            font-size: 25px;
+            font-weight: 500;
+            margin: 8px;
+            background-color: #fff;
+            border: none;
+            border-radius: 10px;
+            border-collapse: collapse;
+        }
+        th , td {
+            padding: 10px;
+        }
+        td {
+            text-align: center;
+        }
+
+        tr:nth-child(even) {background-color: #f2f2f2;}
+
+        #edit-btn {
+            padding: 5px;
+            height: 30px;
+            width: 60px;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 400;
+            background-color: green;
+            color: white;
+            cursor: pointer;
+
+        }
+
+        #del-btn {
+            padding: 5px;
+            height: 30px;
+            width: 60px;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 400;
+            background-color: green;
+            color: white;
+            cursor: pointer;
+
+        }
+
+        #edit-btn:hover {
+            background-color: black;
+            color: white;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+        
+
+         #del-btn:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .remove {
+            text-align: center;
+        }
+
+        #remove-btn {
+            height: 35px;
+            width: 90px;
+            padding: 7px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 300;
+            background-color: rgba(190, 74, 36, 0.852); ;
+            color: white;
+            cursor: pointer;
+        }
+
+        #remove-btn:hover {
+            background-color: red;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <h1><span class="title"><i class="fa-solid fa-clipboard-list"></i></span></h1>
+        
+        <div class="inputdiv">
+            <input type="text" class="input" placeholder="Enter here....." id="input-text">
+            <input type="hidden" id="index">
+            <button class="add-btn" id="btn-add"><i class="fas fa-plus"></i></button>
+            <button id="save-btn">save task</button>
+        </div>
+
+        <div id="container">
+            <table id="table">
+    
+            </table>
+        </div>
+        <div class="remove"><button id="remove-btn">remove all</button></div>
+        
+
+        <script>
+            function showtask(){
+            let webtask = localStorage.getItem("localtask") ;
+
+            if(webtask==null){
+                taskobj = [] ;
+            }
+            else{
+                taskobj = JSON.parse(webtask) ;
+            }
+
+            let tasklist = document.getElementById("table") ;
+
+            let html = '' ;
+
+            taskobj.forEach((item, index) => {
+                
+                html += `<tr><th scope="row">${index+1}</th><td>${item}</td><td><button onclick ="edittask(${index})" id="edit-btn">edit</button></td><td><button onclick ="deletetask(${index})" id="del-btn">delete</button></td></tr>` ;
+            });
+
+            tasklist.innerHTML = html ;
+            }
+
+
+            let inputtext = document.getElementById("input-text") ;
+            function edittask(no){
+            let webtask = localStorage.getItem("localtask") ;
+            let taskobj = JSON.parse(webtask) ;
+
+            inputtext.value = taskobj[no] ;
+            let addbtn = document.getElementById("btn-add") ;
+            let savebtn = document.getElementById("save-btn") ;
+
+            addbtn.style.display = "none" ;
+            savebtn.style.display = "block" ;
+
+            let saveindex = document.getElementById("index") ;
+            saveindex.value = no ;
+            }
+
+            
+            function deletetask(no){
+                let webtask = localStorage.getItem("localtask") ;
+                let taskobj = JSON.parse(webtask) ;
+
+                taskobj.splice(no,1) ;
+                localStorage.setItem("localtask", JSON.stringify(taskobj)) ;
+                showtask() ;
+                
+            }
+            
+        </script>
+    </div>
+</body>
+</html>
